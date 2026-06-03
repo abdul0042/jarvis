@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useVoice } from '../hooks/useVoice';
 import { executeAction } from '../utils/appExecutor';
+import { BACKEND_URL } from '../utils/config';
 
 const STYLE = `
   /* ── Jarvis Assistant Floating Panel ── */
@@ -399,7 +400,7 @@ export function VoiceModal({
       }));
 
       // Step 1: Ask the chat endpoint
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch(`${BACKEND_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text.trim(), history, connectedApps: sanitizedApps, language, userSalutation })
@@ -449,7 +450,7 @@ Instructions:
 - Do NOT output JSON.
 - Address the user as "${userSalutation}".`;
 
-            const summaryResp = await fetch('http://localhost:5000/api/chat', {
+            const summaryResp = await fetch(`${BACKEND_URL}/api/chat`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ message: summaryPrompt, history: [], connectedApps: sanitizedApps, language, userSalutation })
@@ -487,11 +488,11 @@ Instructions:
               (async () => {
                 try {
                   if (targetApp.toLowerCase() === 'gmail') {
-                    await fetch('http://localhost:5000/api/tokens/gmail', { method: 'DELETE' });
+                    await fetch(`${BACKEND_URL}/api/tokens/gmail`, { method: 'DELETE' });
                     localStorage.removeItem('jarvis_gmail_tokens');
                     if (setApps) setApps(prev => prev.filter(a => !a.isGmail && !a.name.toLowerCase().includes('gmail')));
                   } else if (targetApp.toLowerCase() === 'sheets' || targetApp.toLowerCase() === 'google sheets') {
-                    await fetch('http://localhost:5000/api/tokens/sheets', { method: 'DELETE' });
+                    await fetch(`${BACKEND_URL}/api/tokens/sheets`, { method: 'DELETE' });
                     localStorage.removeItem('jarvis_sheets_tokens');
                     if (setApps) setApps(prev => prev.filter(a => !a.isSheets && !a.name.toLowerCase().includes('sheet')));
                   } else {
@@ -501,7 +502,7 @@ Instructions:
                       targetApp.toLowerCase().includes(app.name.toLowerCase())
                     );
                     if (matchingApp) {
-                      await fetch(`http://localhost:5000/api/apps/${matchingApp.id}`, { method: 'DELETE' });
+                      await fetch(`${BACKEND_URL}/api/apps/${matchingApp.id}`, { method: 'DELETE' });
                       if (setApps) setApps(prev => prev.filter(app => app.id !== matchingApp.id));
                     }
                   }

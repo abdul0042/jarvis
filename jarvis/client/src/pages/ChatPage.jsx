@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Chat } from '../components/Chat';
 import { executeAction } from '../utils/appExecutor';
+import { BACKEND_URL } from '../utils/config';
 
 /* ─── Scoped styles (same visual system as Dashboard) ─── */
 const CHAT_STYLE = `
@@ -145,7 +146,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
 
       try {
         const sanitizedApps = apps.map(a => ({ name: a.name, baseUrl: a.baseUrl, description: a.description }));
-        const response = await fetch('http://localhost:5000/api/chat', {
+        const response = await fetch(`${BACKEND_URL}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -246,11 +247,11 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
         setTimeout(async () => {
           try {
             if (targetApp.toLowerCase() === 'gmail') {
-              await fetch('http://localhost:5000/api/tokens/gmail', { method: 'DELETE' });
+              await fetch(`${BACKEND_URL}/api/tokens/gmail`, { method: 'DELETE' });
               localStorage.removeItem('jarvis_gmail_tokens');
               if (setApps) setApps(prev => prev.filter(a => !a.isGmail && !a.name.toLowerCase().includes('gmail')));
             } else if (targetApp.toLowerCase() === 'sheets' || targetApp.toLowerCase() === 'google sheets') {
-              await fetch('http://localhost:5000/api/tokens/sheets', { method: 'DELETE' });
+              await fetch(`${BACKEND_URL}/api/tokens/sheets`, { method: 'DELETE' });
               localStorage.removeItem('jarvis_sheets_tokens');
               if (setApps) setApps(prev => prev.filter(a => !a.isSheets && !a.name.toLowerCase().includes('sheet')));
             } else {
@@ -261,7 +262,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
                 targetApp.toLowerCase().includes(app.name.toLowerCase())
               );
               if (matchingApp) {
-                await fetch(`http://localhost:5000/api/apps/${matchingApp.id}`, { method: 'DELETE' });
+                await fetch(`${BACKEND_URL}/api/apps/${matchingApp.id}`, { method: 'DELETE' });
                 if (setApps) setApps(prev => prev.filter(app => app.id !== matchingApp.id));
               } else {
                 addMessageToUi({ sender: 'jarvis', text: `Could not find any connected app named "${targetApp}" to disconnect, Sir.` });
@@ -351,7 +352,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
             result: { status: apiResult.status, body: { error: errMsg } },
             aiSummary: finalMsg,
           };
-          fetch('http://localhost:5000/api/history', {
+          fetch(`${BACKEND_URL}/api/history`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newHistoryItem)
@@ -541,7 +542,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
             result: { status: apiResult.status, body: apiResult.data },
             aiSummary: directReply,
           };
-          fetch('http://localhost:5000/api/history', {
+          fetch(`${BACKEND_URL}/api/history`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newHistoryItem)

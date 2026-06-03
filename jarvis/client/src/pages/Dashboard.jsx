@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { testConnection, executeAction } from '../utils/appExecutor';
 import { RadarScanner } from '../components/RadarScanner';
+import { BACKEND_URL } from '../utils/config';
 
 /* ─── Hacker HUD styles injected into <head> ─── */
 const DASHBOARD_STYLE = `
@@ -1085,7 +1086,7 @@ function ConnectedAppsPanel({ apps, setApps }) {
       const newStatus = ok ? 'connected' : 'error';
       
       if (app.id && app.id !== 'gmail-oauth' && app.id !== 'sheets-oauth') {
-        await fetch(`http://localhost:5000/api/apps/${app.id}/status`, {
+        await fetch(`${BACKEND_URL}/api/apps/${app.id}/status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })
@@ -1096,7 +1097,7 @@ function ConnectedAppsPanel({ apps, setApps }) {
     } catch {
       const newStatus = 'error';
       if (app.id && app.id !== 'gmail-oauth' && app.id !== 'sheets-oauth') {
-        await fetch(`http://localhost:5000/api/apps/${app.id}/status`, {
+        await fetch(`${BACKEND_URL}/api/apps/${app.id}/status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })

@@ -9,6 +9,7 @@ import { useClapDetector } from './hooks/useClapDetector';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useWakeWord } from './hooks/useWakeWord';
 import { useGemini } from './hooks/useGemini';
+import { BACKEND_URL } from './utils/config';
 
 /* ─── App-shell terminal styles ─── */
 const APP_STYLE = `
@@ -421,7 +422,7 @@ function AppContent() {
 
   // Load history from MongoDB on mount
   useEffect(() => {
-    fetch('http://localhost:5000/api/history')
+    fetch(`${BACKEND_URL}/api/history`)
       .then(r => r.json())
       .then(data => {
         if (data.success && Array.isArray(data.history)) {
@@ -446,7 +447,7 @@ function AppContent() {
 
   // Load apps from MongoDB on mount
   useEffect(() => {
-    fetch('http://localhost:5000/api/apps')
+    fetch(`${BACKEND_URL}/api/apps`)
       .then(r => r.json())
       .then(data => {
         if (data.success) {

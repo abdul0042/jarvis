@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AppConnector } from '../components/AppConnector';
+import { BACKEND_URL } from '../utils/config';
 
 /* ─── Scoped terminal styles ─── */
 const SETTINGS_STYLE = `
@@ -320,7 +321,7 @@ export function Settings({ apps, setApps }) {
 
   const handleSaveApp = async (appData) => {
     try {
-      const res = await fetch('http://localhost:5000/api/apps', {
+      const res = await fetch(`${BACKEND_URL}/api/apps`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -363,7 +364,7 @@ export function Settings({ apps, setApps }) {
   const handleDeleteApp = async (id) => {
     if (!window.confirm('Remove this connected app?')) return;
     try {
-      await fetch(`http://localhost:5000/api/apps/${id}`, { method: 'DELETE' });
+      await fetch(`${BACKEND_URL}/api/apps/${id}`, { method: 'DELETE' });
     } catch (err) {
       console.error('[Settings] Failed to delete app from DB:', err);
     }
@@ -430,13 +431,13 @@ export function Settings({ apps, setApps }) {
               <span>ONLINE</span>
             </div>
             <div className="st-gmail-name">&gt; Gmail Integration</div>
-            <div className="st-gmail-url">http://localhost:5000/api/gmail</div>
+            <div className="st-gmail-url">{BACKEND_URL}/api/gmail</div>
             <div className="st-gmail-email">
               &gt; {gmailTokens.email || 'OAuth Connected'}
             </div>
             <div>
               <button className="st-gmail-btn" onClick={() => {
-                fetch('http://localhost:5000/api/tokens/gmail', { method: 'DELETE' }).catch(console.error);
+                fetch(`${BACKEND_URL}/api/tokens/gmail`, { method: 'DELETE' }).catch(console.error);
                 localStorage.removeItem('jarvis_gmail_tokens');
                 setApps((prev) => prev.filter(a => !a.isGmail));
                 window.location.reload();
@@ -454,13 +455,13 @@ export function Settings({ apps, setApps }) {
               <span>ONLINE</span>
             </div>
             <div className="st-gmail-name">&gt; Google Sheets Integration</div>
-            <div className="st-gmail-url">http://localhost:5000/api/sheets</div>
+            <div className="st-gmail-url">{BACKEND_URL}/api/sheets</div>
             <div className="st-gmail-email">
               &gt; Sheets OAuth Connected
             </div>
             <div>
               <button className="st-gmail-btn" onClick={() => {
-                fetch('http://localhost:5000/api/tokens/sheets', { method: 'DELETE' }).catch(console.error);
+                fetch(`${BACKEND_URL}/api/tokens/sheets`, { method: 'DELETE' }).catch(console.error);
                 localStorage.removeItem('jarvis_sheets_tokens');
                 setApps((prev) => prev.filter(a => !a.isSheets));
                 window.location.reload();

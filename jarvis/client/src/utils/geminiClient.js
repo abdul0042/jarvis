@@ -1,4 +1,4 @@
-const BACKEND_URL = 'http://localhost:5000';
+import { BACKEND_URL } from './config';
 
 /**
  * Send a message to the backend Gemini chat API
